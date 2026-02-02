@@ -1,0 +1,8 @@
+a.(i)The include lines are removed and all content of the header are directly pasted in the file
+  (ii)The define statement removed and the macro "MESSAGE" is replaced with "Hello from CS327" in the print statement
+  (iii)some lines in the hello.i start with #number
+b.there are 29 lines in hello.s,the first 10 lines of the hello.s set up metadata, sections, constants, and symbol information in assembly 
+  so the compiler, linker, debugger, and OS know where the code, data, and main function are and how to execute them safely.
+c.hello.o --- 898 Bytes
+  hello.exe --- 420 KiloBytes 
+  size difference -- ~420 KB

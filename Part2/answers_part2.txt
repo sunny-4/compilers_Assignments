@@ -1,0 +1,4 @@
+a.Number of arithmetic instructions in optimize_O0.s: 5
+b.Number of arithmetic instructions in optimize_O2.s: 0
+c.What single value did the compiler optimize all operations to?
+    it directly optimized x to 9(0+2+2-1+5+1)
