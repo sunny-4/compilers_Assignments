@@ -1,0 +1,40 @@
+Part 3: Reverse Derivation Tree
+Resolved parser file: lalr_assignment3_resolved.y
+
+Requirement 1: Store the derivation tree generated during parsing
+---------------------------------------------------------------
+Implementation details:
+- Every reduction is recorded via `log_reduction(rule_text)`.
+- In addition to printing each reduction, parser now stores `rule_text` in a dynamic array:
+  - `reduction_rules` (char**)
+  - `reduction_count`, `reduction_capacity`
+- Storage helper functions:
+  - `store_reduction_rule(const char *rule_text)`
+  - `free_reduction_rules(void)`
+
+Requirement 2: Display derivation tree in reverse order
+--------------------------------------------------------
+Implementation details:
+- Added helper: `print_reverse_derivation(FILE *out)`.
+- After successful parse (`result == 0`), parser prints:
+  - `Result: ACCEPTED`
+  - `Reverse Derivation Tree (Reduction Sequence in Reverse):`
+  - all stored reductions from last to first.
+- Reverse derivation is printed to both:
+  - stdout
+  - report file (second CLI argument)
+
+Validation run
+--------------
+Input used:
+- tests/valid/01_minimal.c
+
+Observed result:
+- ACCEPTED
+- Reverse reduction sequence is printed (example tail entries):
+  - 30. parameter_list_opt -> epsilon
+  - 31. pointer_opt -> epsilon
+  - 32. type_specifier -> int
+
+Conclusion:
+- The parser now stores derivation information during parse and displays it in reverse order after successful parsing, satisfying Part 3.

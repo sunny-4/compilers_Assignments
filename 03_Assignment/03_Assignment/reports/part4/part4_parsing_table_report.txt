@@ -1,0 +1,65 @@
+Part 4: Parsing Table Output (LALR(1))
+Resolved parser file: lalr_assignment3_resolved.y
+Automaton source: lalr_assignment3_resolved.output
+
+Requirement
+-----------
+The parser must output the LALR(1) parsing table in matrix/tabular format.
+
+What was implemented
+--------------------
+In `lalr_assignment3_resolved.y`, parsing-table generation/printing logic was added:
+
+1) Parse Bison automaton report (`lalr_assignment3_resolved.output`)
+   - Reads state blocks (State 0, State 1, ...)
+   - Extracts ACTION entries:
+     - shift => `sN`
+     - reduce => `rK` (rule number)
+     - accept => `acc`
+   - Extracts GOTO entries:
+     - nonterminal transition => state number
+
+2) Build matrix in memory
+   - Rows: parser states
+   - Columns: symbols (ACTION symbols first, then GOTO symbols)
+   - Cell values: `sN`, `rK`, `acc`, goto-state, or `-`
+
+3) Print in tabular format
+   - Header starts with `State`
+   - Then symbol columns in matrix form
+   - Printed to:
+     - stdout
+     - report file (second parser argument)
+
+Where it is invoked
+-------------------
+Inside `main(...)`, before `yyparse()`:
+- `parse_output_and_build_table("lalr_assignment3_resolved.output")`
+- `print_parsing_table_matrix(stdout)`
+- `print_parsing_table_matrix(report_fp)`
+
+Observed output style (lecture-style notation)
+----------------------------------------------
+- Shift actions shown as `sN`
+- Reduce actions shown as `rK`
+- Accept shown as `acc`
+- GOTO entries shown as state numbers
+
+Example row style:
+State | INT | ... | $ | ... | program | ...
+0     | s1  | ... | - | ... | 10      | ...
+
+Validation
+----------
+Ran:
+- `./lalr_parser_resolved tests/valid/01_minimal.c part4_table_report.txt`
+
+Observed:
+- Parser prints:
+  - `LALR(1) Parsing Table (Matrix Format)`
+  - full table with state rows and symbol columns
+- Parsing still succeeds (`Result: ACCEPTED`).
+
+Conclusion
+----------
+Part 4 requirement is satisfied: parser now outputs the LALR(1) parsing table in matrix/tabular format using lecture-style action/goto notation.

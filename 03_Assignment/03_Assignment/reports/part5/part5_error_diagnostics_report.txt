@@ -1,0 +1,64 @@
+Part 5: Error Diagnostics
+Parser: lalr_assignment3_resolved.y
+Lexer: lalr_assignment3_resolved.l
+
+Objective
+---------
+Provide informative diagnostics that help locate and fix parse/lex errors.
+
+What was improved
+-----------------
+1) Rich syntax diagnostics in `yyerror(...)`
+   - Prints precise location: line + column.
+   - Prints Bison verbose message (`unexpected ... expecting ...`).
+   - Prints the unexpected token/lexeme text.
+   - Prints source-line context and a caret (`^`) at the error column.
+   - Prints targeted hint messages for common issues.
+
+2) Token context captured from lexer
+   - Added lexer globals:
+     - `last_lexeme`
+     - `last_token_line`
+     - `last_token_col`
+   - Updated using `YY_USER_ACTION` so parser diagnostics know exactly which lexeme caused the failure.
+
+3) Heuristic fix hints
+   - Missing semicolon (`expecting SEMICOLON`)
+   - Missing `)` / `}` / `:`
+   - `else` without matching `if`
+   - Unexpected end-of-input
+   - Unsupported `+=` guidance
+
+How cause is located
+--------------------
+The parser reports:
+- exact token (`Unexpected token/lexeme: ...`),
+- exact source line,
+- exact caret position,
+- and a likely fix hint.
+This directly points to likely root cause instead of generic "syntax error" output.
+
+Validation examples
+-------------------
+A) `tests/invalid/04_malformed_switch.c`
+   Output excerpt:
+   - `[ERROR] Syntax error at line 7, col 13`
+   - `Unexpected token/lexeme: 'x'`
+   - `Source line 7:             x = x + 1;`
+   - `Hint: in switch-case, case <expr> : and default : must include ':' .`
+
+B) `tests/invalid/05_unexpected_else.c`
+   Output excerpt:
+   - `[ERROR] Syntax error at line 4, col 5`
+   - `Unexpected token/lexeme: 'else'`
+   - `Source line 4:     else x = 2;`
+   - `Hint: else must follow a complete if statement.`
+
+Notes
+-----
+- `tests/invalid/01_missing_semicolon.c` is invalid as expected (missing `;`).
+- The two showcased examples above were kept because they demonstrate richer context-specific hints.
+
+Conclusion
+----------
+Part 5 requirement is satisfied: the parser now provides useful, location-aware diagnostics that help identify the probable cause of syntax errors and how to fix them.

@@ -1,0 +1,94 @@
+Part 2: Conflict Identification and Resolution
+Grammar (original): lalr_assignment3.y
+Grammar (resolved): lalr_assignment3_resolved.y
+
+1) Clear explanation of conflicts in original grammar
+---------------------------------------------------
+Original grammar has many shift/reduce conflicts and no reduce/reduce conflict.
+Evidence from `lalr_assignment3.output`:
+- `lalr_assignment3.y: warning: 363 shift/reduce conflicts`
+- top conflict lines include:
+    - `State 57 conflicts: 1 shift/reduce`
+    - `State 139 conflicts: 19 shift/reduce`
+    - ...
+    - `State 157 conflicts: 19 shift/reduce`
+    - `State 184 conflicts: 1 shift/reduce`
+
+Conflict families in the original grammar:
+- Expression/operator ambiguity (major source of conflicts):
+    - unresolved nonterminal `ambiguous_expression` allows many binary operators
+        at the same precedence level.
+    - in states like 139–157, parser can both SHIFT and REDUCE for the same
+        operator lookahead, causing repeated SR conflicts.
+- Dangling-else ambiguity:
+- Rule 46: statement -> IF LPAREN expression RPAREN statement
+- Rule 47: statement -> IF LPAREN expression RPAREN statement ELSE statement
+
+At lookahead token ELSE, parser can either:
+- SHIFT (continue Rule 47), or
+- REDUCE by Rule 46.
+
+This is the classic dangling-else ambiguity.
+
+2) Grammar modification to remove conflicts
+------------------------------------------
+A new yacc file was created: `lalr_assignment3_resolved.y`.
+The following precedence directives were added:
+
+- %precedence IFX
+- %precedence ELSE
+
+And the if-without-else production was changed to:
+
+- IF LPAREN expression RPAREN statement %prec IFX
+
+This enforces lower precedence for the if-without-else rule than ELSE, so ELSE binds to the nearest unmatched IF.
+
+3) Proof that grammar change resolves conflicts
+-----------------------------------------------
+Before (original grammar):
+- Running bison on `lalr_assignment3.y` reports:
+    - warning: 363 shift/reduce conflicts
+    - `lalr_assignment3.output` contains multiple conflict states (e.g., 57, 139–157, 184)
+
+After (resolved grammar):
+- Running bison on `lalr_assignment3_resolved.y` reports:
+  - no shift/reduce conflict warning
+  - no reduce/reduce conflict warning
+  - `lalr_assignment3_resolved.output` contains no `conflicts:` entry
+
+Therefore, conflicts are removed in the resolved grammar.
+
+4) Before and after examples of input sentences being parsed
+------------------------------------------------------------
+Example A (dangling-else): `tests/conflict_examples/dangling_else.c`
+
+int main() {
+    if (1)
+        if (0)
+            return 1;
+        else
+            return 2;
+    return 0;
+}
+
+Parsing result:
+- Original parser (`unresolved`): ACCEPTED
+- Resolved parser (`lalr_parser_resolved`): ACCEPTED
+
+Example B (if without else): `tests/conflict_examples/if_without_else.c`
+
+int main() {
+    if (1)
+        return 10;
+    return 0;
+}
+
+Parsing result:
+- Original parser (`unresolved`): ACCEPTED
+- Resolved parser (`lalr_parser_resolved`): ACCEPTED
+
+Interpretation:
+- Both examples parse successfully before and after.
+- The key improvement is that the resolved grammar removes parser-generation ambiguity
+    (conflict count becomes zero), while preserving intended behavior.

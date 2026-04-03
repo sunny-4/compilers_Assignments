@@ -1,0 +1,66 @@
+Conflict Analysis Report
+Grammar file: lalr_assignment3.y
+Automaton report: lalr_assignment3.output
+
+Summary
+-------
+- Total shift/reduce conflicts: 363
+- Total reduce/reduce conflicts: 0
+
+Evidence:
+- Running Bison on `lalr_assignment3.y` reports: `363 shift/reduce conflicts`.
+- The top of `lalr_assignment3.output` lists multiple conflicted states, including:
+  - `State 57 conflicts: 1 shift/reduce`
+  - `State 139 conflicts: 19 shift/reduce`
+  - `State 140 conflicts: 19 shift/reduce`
+  - ...
+  - `State 157 conflicts: 19 shift/reduce`
+  - `State 184 conflicts: 1 shift/reduce`
+
+4. Explicit conflict details
+
+a) State(s) where conflict occurs
+---------------------------------
+Conflicts occur in multiple states. Representative examples:
+- State 139 (19 shift/reduce conflicts)
+- State 140 (19 shift/reduce conflicts)
+- ... similar pattern through State 157
+- State 184 (1 shift/reduce conflict; dangling-else)
+
+b) Type of conflict
+-------------------
+- Shift/Reduce: 363
+- Reduce/Reduce: 0
+
+c) Exact productions involved in conflicts
+-----------------------------------------
+Representative conflict family 1 (operator ambiguity)
+- In State 139, these productions are involved:
+  - `ambiguous_expression -> ambiguous_expression PLUS ambiguous_expression`
+  - and competing continuations such as
+    `ambiguous_expression -> ambiguous_expression <op> ambiguous_expression`
+    where `<op>` includes `+ - * / % < > <= >= == != && || & | ^ = , <=>`
+
+Conflict mechanism in State 139:
+- Example lookahead: `PLUS`
+  - SHIFT: continue parsing another binary operation
+  - REDUCE: reduce by rule 87 (`ambiguous_expression -> ambiguous_expression PLUS ambiguous_expression`)
+- The same shift-vs-reduce competition appears for many operators in this state,
+  producing 19 SR conflicts in State 139 alone.
+
+Representative conflict family 2 (dangling-else)
+- In State 184:
+  - Rule 46: `statement -> IF LPAREN expression RPAREN statement`
+  - Rule 47: `statement -> IF LPAREN expression RPAREN statement ELSE statement`
+
+Conflict trigger/lookahead token:
+- `ELSE`
+
+Parser actions in conflict:
+- SHIFT on `ELSE` (continue Rule 47)
+- REDUCE by Rule 46 (complete if-without-else)
+
+Conclusion
+----------
+After removing precedence/associativity encoding from expression grammar, the parser now
+shows many intentional SR conflicts (363 total), which is expected for this grammar.
