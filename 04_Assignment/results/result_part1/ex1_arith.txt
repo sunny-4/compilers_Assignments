@@ -1,0 +1,27 @@
+CS327 Assignment 4 - Intermediate Code Generation
+No optimization is applied.
+
+Input Source Program
+--------------------
+int main() {
+    int a;
+    int b;
+    int c;
+    a = -b * -c + b * -c;
+    return a;
+}
+
+Generated Intermediate Code (Three Address Code - Quadruples)
+-----------------------------------------------------------------------
+row    | op           | arg1         | arg2         | result      
+-----------------------------------------------------------------------
+0      | minus        | b            |              | t1          
+1      | minus        | c            |              | t2          
+2      | *            | t1           | t2           | t3          
+3      | minus        | c            |              | t4          
+4      | *            | b            | t4           | t5          
+5      | +            | t3           | t5           | t6          
+6      | =            | t6           |              | a           
+7      | return       | a            |              |             
+
+Result: ACCEPTED

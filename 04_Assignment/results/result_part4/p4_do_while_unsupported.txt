@@ -1,0 +1,22 @@
+CS327 Assignment 4 - Intermediate Code Generation
+No optimization is applied.
+
+Input Source Program
+--------------------
+int main() {
+    int i;
+    i = 0;
+    do {
+        i = i + 1;
+    } while (i < 3);
+    return i;
+}
+
+Result: REJECTED
+
+Diagnostics
+-----------
+[ERROR] line 6, col 20
+Message: unsupported construct: do-while loop
+Unexpected token/lexeme: ';'
+Hint: inspect the token near the reported line/column.

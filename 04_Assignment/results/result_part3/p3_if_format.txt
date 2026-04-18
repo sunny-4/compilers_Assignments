@@ -1,0 +1,30 @@
+CS327 Assignment 4 - Intermediate Code Generation
+No optimization is applied.
+
+Input Source Program
+--------------------
+int main() {
+    int x;
+    int y;
+    x = 1;
+    y = 2;
+    if (x < y) {
+        x = x + y;
+    }
+    return x;
+}
+
+Generated Intermediate Code (Three Address Code - Quadruples)
+-----------------------------------------------------------------------
+row    | op           | arg1         | arg2         | result      
+-----------------------------------------------------------------------
+0      | =            | 1            |              | x           
+1      | =            | 2            |              | y           
+2      | <            | x            | y            | t1          
+3      | iffalse      | t1           |              | L1          
+4      | +            | x            | y            | t2          
+5      | =            | t2           |              | x           
+6      | label        |              |              | L1          
+7      | return       | x            |              |             
+
+Result: ACCEPTED

@@ -1,0 +1,20 @@
+CS327 Assignment 4 - Intermediate Code Generation
+No optimization is applied.
+
+Input Source Program
+--------------------
+int main() {
+    int x;
+    x = 1;
+    x += 2;
+    return x;
+}
+
+Result: REJECTED
+
+Diagnostics
+-----------
+[ERROR] line 4, col 7
+Message: syntax error, unexpected $undefined, expecting SEMICOLON
+Unexpected token/lexeme: '+='
+Hint: a statement/declaration is likely missing ';'.

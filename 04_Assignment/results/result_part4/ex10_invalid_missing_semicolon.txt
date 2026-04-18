@@ -1,0 +1,19 @@
+CS327 Assignment 4 - Intermediate Code Generation
+No optimization is applied.
+
+Input Source Program
+--------------------
+int main() {
+    int a;
+    a = 10
+    return a;
+}
+
+Result: REJECTED
+
+Diagnostics
+-----------
+[ERROR] line 4, col 5
+Message: syntax error, unexpected RETURN, expecting SEMICOLON
+Unexpected token/lexeme: 'return'
+Hint: a statement/declaration is likely missing ';'.

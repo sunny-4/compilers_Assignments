@@ -1,0 +1,35 @@
+CS327 Assignment 4 - Intermediate Code Generation
+No optimization is applied.
+
+Input Source Program
+--------------------
+int main() {
+    int i;
+    int sum;
+    i = 0;
+    sum = 0;
+    while (i < 5) {
+        sum = sum + i;
+        i = i + 1;
+    }
+    return sum;
+}
+
+Generated Intermediate Code (Three Address Code - Quadruples)
+-----------------------------------------------------------------------
+row    | op           | arg1         | arg2         | result      
+-----------------------------------------------------------------------
+0      | =            | 0            |              | i           
+1      | =            | 0            |              | sum         
+2      | label        |              |              | L1          
+3      | <            | i            | 5            | t1          
+4      | iffalse      | t1           |              | L2          
+5      | +            | sum          | i            | t2          
+6      | =            | t2           |              | sum         
+7      | +            | i            | 1            | t3          
+8      | =            | t3           |              | i           
+9      | goto         |              |              | L1          
+10     | label        |              |              | L2          
+11     | return       | sum          |              |             
+
+Result: ACCEPTED

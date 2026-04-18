@@ -1,0 +1,19 @@
+CS327 Assignment 4 - Intermediate Code Generation
+No optimization is applied.
+
+Input Source Program
+--------------------
+int main() {
+    int a;
+    a = 1;
+    /* unterminated comment
+
+Result: REJECTED
+
+Diagnostics
+-----------
+[ERROR] line 4, col 28
+Message: syntax error, unexpected $end, expecting RBRACE
+Unexpected token/lexeme: '
+'
+Hint: check for an unclosed '{' block.
